@@ -1,10 +1,20 @@
 #pragma once
 #include <iostream>
+#include <utils.hpp>
 #include <vec3.hpp>
 
-void writeColor(std::ostream &out, color3 col)
+void writeColor(std::ostream &out, color3 col, int samples)
 {
-    out << static_cast<int>(255.999 * col.x) << ' '
-        << static_cast<int>(255.999 * col.y) << ' '
-        << static_cast<int>(255.999 * col.z) << '\n';
+    double r = col.r;
+    double g = col.g;
+    double b = col.b;
+
+    double scale = 1.0 / samples;
+    r *= scale;
+    g *= scale;
+    b *= scale;
+
+    out << static_cast<int>(256 * clamp(r, 0.0, 0.999)) << ' '
+        << static_cast<int>(256 * clamp(g, 0.0, 0.999)) << ' '
+        << static_cast<int>(256 * clamp(b, 0.0, 0.999)) << '\n';
 }

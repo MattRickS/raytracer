@@ -1,4 +1,5 @@
 #include <iostream>
+#include <camera.hpp>
 #include <color.hpp>
 #include <hittables/hittable_list.hpp>
 #include <hittables/sphere.hpp>
@@ -23,22 +24,16 @@ int main()
     const double aspect = 16.0 / 9.0;
     const int width = 384;
     const int height = static_cast<int>(width / aspect);
+    const int samples = 100;
 
     std::cout << "P3\n"
               << width << ' ' << height << " 255" << std::endl;
 
-    double viewport_height = 2.0;
-    double viewport_width = aspect * viewport_height;
-    double focal = 1.0;
-
-    point3 origin{0};
-    vec3 horizontal{viewport_width, 0, 0};
-    vec3 vertical{0, viewport_height, 0};
-    vec3 lower_left = origin - horizontal / 2 - vertical / 2 - vec3(0, 0, focal);
-
     HittableList world;
     world.add(std::make_shared<Sphere>(point3(0, 0, -1), 0.5));
     world.add(std::make_shared<Sphere>(point3(0, -100.5, -1), 100));
+
+    Camera cam;
 
     for (int y = height - 1; y >= 0; --y)
     {
@@ -46,11 +41,15 @@ int main()
         //           << std::flush;
         for (int x = 0; x < width; x++)
         {
-            double u = double(x) / (width - 1);
-            double v = double(y) / (height - 1);
-            Ray ray(origin, lower_left + u * horizontal + v * vertical - origin);
-            color3 pixel = rayColor(ray, world);
-            writeColor(std::cout, pixel);
+            color3 pixel{0.0};
+            for (int s = 0; s < samples; ++s)
+            {
+                double u = (x + randDouble()) / (width - 1);
+                double v = (y + randDouble()) / (height - 1);
+                Ray ray = cam.projectRay(u, v);
+                pixel += rayColor(ray, world);
+            }
+            writeColor(std::cout, pixel, samples);
         }
     }
 
