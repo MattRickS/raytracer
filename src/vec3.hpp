@@ -122,3 +122,5 @@ inline vec3 normalise(const vec3 &v)
 }
 
 vec3 randomUnitSphere();
+vec3 randomUnitVector();
+vec3 randomHemisphere(const vec3 &normal);

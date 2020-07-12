@@ -17,7 +17,7 @@ color3 rayColor(const Ray &ray, const Hittable &world, int depth)
     Hit hit;
     if (world.hit(ray, 0.001, infinity, hit))
     {
-        point3 target = hit.pos + hit.normal + randomUnitSphere();
+        point3 target = hit.pos + randomHemisphere(hit.normal);
         return 0.5 * rayColor(Ray(hit.pos, target - hit.pos), world, depth - 1);
     }
     vec3 dir = normalise(ray.dir);
