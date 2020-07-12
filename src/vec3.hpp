@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 #include <iostream>
+#include <utils.hpp>
 
 class vec3
 {
@@ -49,6 +50,16 @@ public:
     vec3 &operator/=(const double t)
     {
         return *this *= 1 / t;
+    }
+
+    inline static vec3 random()
+    {
+        return vec3(randDouble(), randDouble(), randDouble());
+    }
+
+    inline static vec3 random(double min, double max)
+    {
+        return vec3(randDouble(min, max), randDouble(min, max), randDouble(min, max));
     }
 };
 
@@ -109,3 +120,5 @@ inline vec3 normalise(const vec3 &v)
 {
     return v / length(v);
 }
+
+vec3 randomUnitSphere();

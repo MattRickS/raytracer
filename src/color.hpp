@@ -5,14 +5,10 @@
 
 void writeColor(std::ostream &out, color3 col, int samples)
 {
-    double r = col.r;
-    double g = col.g;
-    double b = col.b;
-
     double scale = 1.0 / samples;
-    r *= scale;
-    g *= scale;
-    b *= scale;
+    double r = std::pow(scale * col.r, 0.5);
+    double g = std::pow(scale * col.g, 0.5);
+    double b = std::pow(scale * col.b, 0.5);
 
     out << static_cast<int>(256 * clamp(r, 0.0, 0.999)) << ' '
         << static_cast<int>(256 * clamp(g, 0.0, 0.999)) << ' '
