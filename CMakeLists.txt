@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.10.0)
+project(RAYTRACER)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+file(GLOB SOURCES "src/*.cpp")
+add_executable(test ${SOURCES})
