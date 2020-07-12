@@ -1,23 +1,17 @@
 #include <iostream>
 #include <color.hpp>
+#include <hittables/hittable_list.hpp>
+#include <hittables/sphere.hpp>
 #include <ray.hpp>
+#include <utils.hpp>
 #include <vec3.hpp>
 
-bool hitSphere(const point3 &center, double radius, const Ray &ray)
+color3 rayColor(const Ray &ray, const Hittable &world)
 {
-    vec3 oc = ray.origin - center;
-    double a = dot(ray.dir, ray.dir);
-    double b = 2.0 * dot(oc, ray.dir);
-    double c = dot(oc, oc) - radius * radius;
-    double discriminant = b * b - 4 * a * c;
-    return (discriminant > 0);
-}
-
-color3 rayColor(const Ray &ray)
-{
-    if (hitSphere(point3(0, 0, -1), 0.5, ray))
+    Hit hit;
+    if (world.hit(ray, 0, infinity, hit))
     {
-        return color3(1.0, 0.0, 0.0);
+        return 0.5 * (hit.normal + color3(1.0));
     }
     vec3 dir = normalise(ray.dir);
     double delta = (dir.y + 1.0) * 0.5;
@@ -42,6 +36,10 @@ int main()
     vec3 vertical{0, viewport_height, 0};
     vec3 lower_left = origin - horizontal / 2 - vertical / 2 - vec3(0, 0, focal);
 
+    HittableList world;
+    world.add(std::make_shared<Sphere>(point3(0, 0, -1), 0.5));
+    world.add(std::make_shared<Sphere>(point3(0, -100.5, -1), 100));
+
     for (int y = height - 1; y >= 0; --y)
     {
         // std::cerr << "\rScanlines remaining: " << y << '\n'
@@ -51,7 +49,7 @@ int main()
             double u = double(x) / (width - 1);
             double v = double(y) / (height - 1);
             Ray ray(origin, lower_left + u * horizontal + v * vertical - origin);
-            color3 pixel = rayColor(ray);
+            color3 pixel = rayColor(ray, world);
             writeColor(std::cout, pixel);
         }
     }
