@@ -23,6 +23,7 @@ public:
     };
 
     vec3() : data{0, 0, 0} {}
+    vec3(double x) : data{x, x, x} {}
     vec3(double x, double y, double z) : data{x, y, z} {}
 
     vec3 operator-() const { return vec3(-x, -y, -z); }
@@ -76,7 +77,7 @@ inline vec3 operator*(const vec3 &lhs, const vec3 &rhs)
 
 inline vec3 operator*(const vec3 &lhs, const double rhs)
 {
-    return vec3(lhs.x + rhs, lhs.y + rhs, lhs.z + rhs);
+    return vec3(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs);
 }
 
 inline vec3 operator*(const double lhs, const vec3 &rhs)
@@ -89,9 +90,14 @@ inline vec3 operator/(const vec3 &lhs, const double rhs)
     return lhs * (1 / rhs);
 }
 
+inline double dot(const vec3 &lhs, const vec3 &rhs)
+{
+    return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
+}
+
 inline double dot(const vec3 &v)
 {
-    return v.x * v.x + v.y * v.y + v.z * v.z;
+    return dot(v, v);
 }
 
 inline double length(const vec3 &v)
