@@ -31,3 +31,8 @@ vec3 randomHemisphere(const vec3 &normal)
         return -unit_sphere;
     }
 }
+
+vec3 reflect(const vec3 &v, const vec3 &normal)
+{
+    return v - 2 * dot(v, normal) * normal;
+}

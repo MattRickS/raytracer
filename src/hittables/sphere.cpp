@@ -17,6 +17,7 @@ bool Sphere::hit(const Ray &ray, double tmin, double tmax, Hit &hit) const
             hit.pos = ray.at(delta);
             vec3 outward_normal = (hit.pos - center) / radius;
             hit.set_face_normal(ray, outward_normal);
+            hit.mat_ptr = mat_ptr;
             return true;
         }
         delta = (-half_b + root) / a;
@@ -26,6 +27,7 @@ bool Sphere::hit(const Ray &ray, double tmin, double tmax, Hit &hit) const
             hit.pos = ray.at(delta);
             vec3 outward_normal = (hit.pos - center) / radius;
             hit.set_face_normal(ray, outward_normal);
+            hit.mat_ptr = mat_ptr;
             return true;
         }
     }

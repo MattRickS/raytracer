@@ -2,10 +2,13 @@
 #include <ray.hpp>
 #include <vec3.hpp>
 
+class Material;
+
 struct Hit
 {
     point3 pos;
     vec3 normal;
+    std::shared_ptr<Material> mat_ptr;
     double delta;
     bool front_face;
 

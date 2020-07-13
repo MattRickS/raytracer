@@ -3,6 +3,9 @@
 #include <color.hpp>
 #include <hittables/hittable_list.hpp>
 #include <hittables/sphere.hpp>
+#include <materials/material.hpp>
+#include <materials/lambertian.hpp>
+#include <materials/metal.hpp>
 #include <ray.hpp>
 #include <utils.hpp>
 #include <vec3.hpp>
@@ -17,8 +20,13 @@ color3 rayColor(const Ray &ray, const Hittable &world, int depth)
     Hit hit;
     if (world.hit(ray, 0.001, infinity, hit))
     {
-        point3 target = hit.pos + randomHemisphere(hit.normal);
-        return 0.5 * rayColor(Ray(hit.pos, target - hit.pos), world, depth - 1);
+        Ray scattered;
+        color3 attenuation;
+        if (hit.mat_ptr->scatter(ray, hit, attenuation, scattered))
+        {
+            return attenuation * rayColor(scattered, world, depth - 1);
+        }
+        return color3(0);
     }
     vec3 dir = normalise(ray.dir);
     double delta = (dir.y + 1.0) * 0.5;
@@ -37,8 +45,14 @@ int main()
               << width << ' ' << height << " 255" << std::endl;
 
     HittableList world;
-    world.add(std::make_shared<Sphere>(point3(0, 0, -1), 0.5));
-    world.add(std::make_shared<Sphere>(point3(0, -100.5, -1), 100));
+    world.add(std::make_shared<Sphere>(
+        point3(0, 0, -1), 0.5, std::make_shared<Lambertian>(color3(0.7, 0.3, 0.3))));
+    world.add(std::make_shared<Sphere>(
+        point3(0, -100.5, -1), 100, std::make_shared<Lambertian>(color3(0.8, 0.8, 0.0))));
+    world.add(std::make_shared<Sphere>(
+        point3(1, 0, -1), 0.5, std::make_shared<Metal>(color3(0.8, 0.6, 0.2))));
+    world.add(std::make_shared<Sphere>(
+        point3(-1, 0, -1), 0.5, std::make_shared<Metal>(color3(0.8))));
 
     Camera cam;
 
