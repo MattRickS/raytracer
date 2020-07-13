@@ -1,6 +1,13 @@
 #pragma once
 #include <materials/material.hpp>
 
+double schlick(double cosine, double refractIndex)
+{
+    double r0 = (1 - refractIndex) / (1 + refractIndex);
+    r0 *= r0;
+    return r0 + (1 - r0) * pow((1 - cosine), 5);
+}
+
 class Dielectric : public Material
 {
 public:
@@ -18,6 +25,13 @@ public:
         double cos_theta = fmin(dot(-dir, hit.normal), 1.0);
         double sin_theta = sqrt(1.0 - cos_theta * cos_theta);
         if (etai_over_etat * sin_theta > 1.0)
+        {
+            vec3 reflected = reflect(dir, hit.normal);
+            scattered = Ray(hit.pos, reflected);
+            return true;
+        }
+        double reflect_prob = schlick(cos_theta, etai_over_etat);
+        if (randDouble() < reflect_prob)
         {
             vec3 reflected = reflect(dir, hit.normal);
             scattered = Ray(hit.pos, reflected);
