@@ -1,5 +1,5 @@
 #pragma once
-#include <hittable.hpp>
+#include <hittables/hittable.hpp>
 #include <materials/material.hpp>
 #include <vec3.hpp>
 

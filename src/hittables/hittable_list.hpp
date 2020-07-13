@@ -1,5 +1,5 @@
 #pragma once
-#include <hittable.hpp>
+#include <hittables/hittable.hpp>
 #include <memory>
 #include <vector>
 
