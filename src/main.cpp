@@ -45,6 +45,59 @@ color3 rayColor(const Ray &ray, const Hittable &world, int depth)
     return (1.0 - delta) * color3(1.0) + delta * color3(0.5, 0.7, 1.0);
 }
 
+HittableList randomScene()
+{
+    HittableList world;
+
+    auto ground_material = std::make_shared<Lambertian>(color3(0.5));
+    world.add(std::make_shared<Sphere>(point3(0, -1000, 0), 1000, ground_material));
+
+    for (int a = -11; a < 11; a++)
+    {
+        for (int b = -11; b < 11; b++)
+        {
+            double material_choice = randDouble();
+            point3 center(a + 0.9 * randDouble(), 0.2, b + 0.9 * randDouble());
+
+            if (length(center - point3(4, 0.2, 0)) > 0.9)
+            {
+                std::shared_ptr<Material> sphere_material;
+
+                if (material_choice < 0.8)
+                {
+                    // diffuse
+                    color3 albedo = color3::random() * color3::random();
+                    sphere_material = std::make_shared<Lambertian>(albedo);
+                }
+                else if (material_choice < 0.95)
+                {
+                    // metal
+                    color3 albedo = color3::random(0.5, 1);
+                    double fuzz = randDouble(0, 0.5);
+                    sphere_material = std::make_shared<Metal>(albedo, fuzz);
+                }
+                else
+                {
+                    // glass
+                    sphere_material = std::make_shared<Dielectric>(1.5);
+                }
+                world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
+            }
+        }
+    }
+
+    auto material1 = std::make_shared<Dielectric>(1.5);
+    world.add(std::make_shared<Sphere>(point3(0, 1, 0), 1.0, material1));
+
+    auto material2 = std::make_shared<Lambertian>(color3(0.4, 0.2, 0.1));
+    world.add(std::make_shared<Sphere>(point3(-4, 1, 0), 1.0, material2));
+
+    auto material3 = std::make_shared<Metal>(color3(0.7, 0.6, 0.5), 0.0);
+    world.add(std::make_shared<Sphere>(point3(4, 1, 0), 1.0, material3));
+
+    return world;
+}
+
 int main()
 {
     const double aspect = 16.0 / 9.0;
@@ -56,22 +109,28 @@ int main()
     std::cout << "P3\n"
               << width << ' ' << height << " 255" << std::endl;
 
-    HittableList world;
-    world.add(std::make_shared<Sphere>(
-        point3(0, 0, -1), 0.5, std::make_shared<Lambertian>(color3(0.7, 0.3, 0.3))));
-    world.add(std::make_shared<Sphere>(
-        point3(0, -100.5, -1), 100, std::make_shared<Lambertian>(color3(0.8, 0.8, 0.0))));
-    world.add(std::make_shared<Sphere>(
-        point3(1, 0, -1), 0.5, std::make_shared<Metal>(color3(0.8, 0.6, 0.2), 0.3)));
-    world.add(std::make_shared<Sphere>(
-        point3(-1, 0, -1), 0.5, std::make_shared<Dielectric>(1.5)));
-    world.add(std::make_shared<Sphere>(
-        point3(-1, 0, -1), -0.45, std::make_shared<Dielectric>(1.5)));
+    HittableList world = randomScene();
+    // world.add(std::make_shared<Sphere>(
+    //     point3(0, 0, -1), 0.5, std::make_shared<Lambertian>(color3(0.7, 0.3, 0.3))));
+    // world.add(std::make_shared<Sphere>(
+    //     point3(0, -100.5, -1), 100, std::make_shared<Lambertian>(color3(0.8, 0.8, 0.0))));
+    // world.add(std::make_shared<Sphere>(
+    //     point3(1, 0, -1), 0.5, std::make_shared<Metal>(color3(0.8, 0.6, 0.2), 0.3)));
+    // world.add(std::make_shared<Sphere>(
+    //     point3(-1, 0, -1), 0.5, std::make_shared<Dielectric>(1.5)));
+    // world.add(std::make_shared<Sphere>(
+    //     point3(-1, 0, -1), -0.45, std::make_shared<Dielectric>(1.5)));
 
-    point3 cam_pos(-3, 3, 2);
-    point3 cam_target(0, 0, -1);
-    double focus_dist{length(cam_pos - cam_target)};
-    Camera cam(cam_pos, cam_target, vec3(0, 1, 0), 34.4, 1.77, 0.4, focus_dist);
+    // point3 cam_pos(-3, 3, 2);
+    // point3 cam_target(0, 0, -1);
+    // double focus_dist{length(cam_pos - cam_target)};
+    // Camera cam(cam_pos, cam_target, vec3(0, 1, 0), 34.4, 1.77, 0.4, focus_dist);
+
+    point3 cam_pos(13, 2, 3);
+    point3 cam_target(0);
+    double focus_dist{10.0};
+    double aperture{0.1};
+    Camera cam(cam_pos, cam_target, vec3(0, 1, 0), 34.4, aspect, aperture, focus_dist);
 
     for (int y = height - 1; y >= 0; --y)
     {
