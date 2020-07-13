@@ -50,9 +50,9 @@ int main()
     world.add(std::make_shared<Sphere>(
         point3(0, -100.5, -1), 100, std::make_shared<Lambertian>(color3(0.8, 0.8, 0.0))));
     world.add(std::make_shared<Sphere>(
-        point3(1, 0, -1), 0.5, std::make_shared<Metal>(color3(0.8, 0.6, 0.2))));
+        point3(1, 0, -1), 0.5, std::make_shared<Metal>(color3(0.8, 0.6, 0.2), 0.3)));
     world.add(std::make_shared<Sphere>(
-        point3(-1, 0, -1), 0.5, std::make_shared<Metal>(color3(0.8))));
+        point3(-1, 0, -1), 0.5, std::make_shared<Metal>(color3(0.8), 1.0)));
 
     Camera cam;
 
