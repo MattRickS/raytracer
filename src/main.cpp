@@ -68,7 +68,7 @@ int main()
     world.add(std::make_shared<Sphere>(
         point3(-1, 0, -1), -0.45, std::make_shared<Dielectric>(1.5)));
 
-    Camera cam;
+    Camera cam(point3(-2, 2, 1), point3(0, 0, -1), vec3(0, 1, 0), 90, 1.77);
 
     for (int y = height - 1; y >= 0; --y)
     {
