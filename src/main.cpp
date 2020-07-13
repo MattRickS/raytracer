@@ -3,8 +3,9 @@
 #include <color.hpp>
 #include <hittables/hittable_list.hpp>
 #include <hittables/sphere.hpp>
-#include <materials/material.hpp>
+#include <materials/dielectric.hpp>
 #include <materials/lambertian.hpp>
+#include <materials/material.hpp>
 #include <materials/metal.hpp>
 #include <ray.hpp>
 #include <utils.hpp>
@@ -52,7 +53,7 @@ int main()
     world.add(std::make_shared<Sphere>(
         point3(1, 0, -1), 0.5, std::make_shared<Metal>(color3(0.8, 0.6, 0.2), 0.3)));
     world.add(std::make_shared<Sphere>(
-        point3(-1, 0, -1), 0.5, std::make_shared<Metal>(color3(0.8), 1.0)));
+        point3(-1, 0, -1), 0.5, std::make_shared<Dielectric>(1.5)));
 
     Camera cam;
 

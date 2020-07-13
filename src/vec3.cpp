@@ -36,3 +36,11 @@ vec3 reflect(const vec3 &v, const vec3 &normal)
 {
     return v - 2 * dot(v, normal) * normal;
 }
+
+vec3 refract(const vec3 &v, const vec3 &normal, double etai_over_etat)
+{
+    double cos_theta = dot(-v, normal);
+    vec3 r_parallel = etai_over_etat * (v + cos_theta * normal);
+    vec3 r_perpendicular = -sqrt(1.0 - dot(r_parallel)) * normal;
+    return r_parallel + r_perpendicular;
+}
