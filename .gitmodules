@@ -1,0 +1,3 @@
+[submodule "extern/stb"]
+	path = extern/stb
+	url = ../../nothings/stb
