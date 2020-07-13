@@ -38,3 +38,11 @@ bool MovingSphere::hit(const Ray &ray, double tmin, double tmax, Hit &hit) const
     }
     return false;
 }
+
+bool MovingSphere::bbox(double t0, double t1, AABB &aabb) const
+{
+    AABB box0(center(t0) - vec3(radius), center(t0) + vec3(radius));
+    AABB box1(center(t1) - vec3(radius), center(t1) + vec3(radius));
+    aabb = surroundingBox(box0, box1);
+    return true;
+}

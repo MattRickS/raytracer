@@ -1,4 +1,5 @@
 #pragma once
+#include <aabb.hpp>
 #include <hittables/hittable.hpp>
 #include <memory>
 #include <vector>
@@ -15,4 +16,5 @@ public:
     void add(std::shared_ptr<Hittable> object) { objects.push_back(object); }
 
     virtual bool hit(const Ray &ray, double tmin, double tmax, Hit &hit) const;
+    virtual bool bbox(double t0, double t1, AABB &aabb) const;
 };

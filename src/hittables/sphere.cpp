@@ -33,3 +33,9 @@ bool Sphere::hit(const Ray &ray, double tmin, double tmax, Hit &hit) const
     }
     return false;
 }
+
+bool Sphere::bbox(double t0, double t1, AABB &aabb) const
+{
+    aabb = AABB(center - vec3(radius), center + vec3(radius));
+    return true;
+}

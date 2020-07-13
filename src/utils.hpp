@@ -36,3 +36,10 @@ inline double randDouble(double min, double max)
 {
     return min + (max - min) * randDouble();
 }
+
+inline int randInt(int min, int max)
+{
+    std::uniform_int_distribution<int> distribution(min, max);
+    std::mt19937 generator;
+    return distribution(generator);
+}

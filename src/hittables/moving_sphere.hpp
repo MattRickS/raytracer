@@ -1,4 +1,5 @@
 #pragma once
+#include <aabb.hpp>
 #include <hittables/hittable.hpp>
 #include <materials/material.hpp>
 
@@ -17,6 +18,7 @@ public:
         : center0(center0), center1(center1), time0(t0), time1(t1), radius(r), mat_ptr(material) {}
 
     virtual bool hit(const Ray &ray, double tmin, double tmax, Hit &hit) const;
+    virtual bool bbox(double t0, double t1, AABB &aabb) const;
 
     point3 center(double time) const;
 };
