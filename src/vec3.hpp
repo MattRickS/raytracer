@@ -129,8 +129,9 @@ inline vec3 normalise(const vec3 &v)
     return v / length(v);
 }
 
+vec3 randomUnitDisk();
+vec3 randomUnitHemisphere(const vec3 &normal);
 vec3 randomUnitSphere();
 vec3 randomUnitVector();
-vec3 randomHemisphere(const vec3 &normal);
 vec3 reflect(const vec3 &v, const vec3 &normal);
 vec3 refract(const vec3 &v, const vec3 &normal, double etai_over_etat);

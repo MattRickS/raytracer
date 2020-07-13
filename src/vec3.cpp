@@ -1,5 +1,16 @@
 #include <vec3.hpp>
 
+vec3 randomUnitDisk()
+{
+    while (true)
+    {
+        vec3 pos = vec3(randDouble(-1, 1), randDouble(-1, 1), 0);
+        if (dot(pos) >= 1)
+            continue;
+        return pos;
+    }
+}
+
 vec3 randomUnitSphere()
 {
     while (true)
@@ -19,7 +30,7 @@ vec3 randomUnitVector()
     return vec3(r * cos(a), r * sin(a), z);
 }
 
-vec3 randomHemisphere(const vec3 &normal)
+vec3 randomUnitHemisphere(const vec3 &normal)
 {
     vec3 unit_sphere = randomUnitSphere();
     if (dot(unit_sphere, normal) > 0.0)

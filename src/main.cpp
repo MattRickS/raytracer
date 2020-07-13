@@ -68,7 +68,10 @@ int main()
     world.add(std::make_shared<Sphere>(
         point3(-1, 0, -1), -0.45, std::make_shared<Dielectric>(1.5)));
 
-    Camera cam(point3(-2, 2, 1), point3(0, 0, -1), vec3(0, 1, 0), 90, 1.77);
+    point3 cam_pos(-3, 3, 2);
+    point3 cam_target(0, 0, -1);
+    double focus_dist{length(cam_pos - cam_target)};
+    Camera cam(cam_pos, cam_target, vec3(0, 1, 0), 34.4, 1.77, 0.4, focus_dist);
 
     for (int y = height - 1; y >= 0; --y)
     {
