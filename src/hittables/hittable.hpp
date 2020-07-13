@@ -11,6 +11,8 @@ struct Hit
     vec3 normal;
     std::shared_ptr<Material> mat_ptr;
     double delta;
+    double u;
+    double v;
     bool front_face;
 
     inline void set_face_normal(const Ray &ray, const vec3 &outward_normal)

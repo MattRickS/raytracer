@@ -8,6 +8,7 @@
 #include <materials/material.hpp>
 #include <materials/metal.hpp>
 #include <ray.hpp>
+#include <texture.hpp>
 #include <utils.hpp>
 #include <vec3.hpp>
 
@@ -50,7 +51,7 @@ HittableList randomScene()
 {
     HittableList world;
 
-    auto ground_material = std::make_shared<Lambertian>(color3(0.5));
+    auto ground_material = std::make_shared<Lambertian>(std::make_shared<SolidColor>(0.5, 0.5, 0.5));
     world.add(std::make_shared<Sphere>(point3(0, -1000, 0), 1000, ground_material));
 
     for (int a = -11; a < 11; a++)
@@ -68,7 +69,7 @@ HittableList randomScene()
                 {
                     // diffuse
                     color3 albedo = color3::random() * color3::random();
-                    sphere_material = std::make_shared<Lambertian>(albedo);
+                    sphere_material = std::make_shared<Lambertian>(std::make_shared<SolidColor>(albedo));
                     point3 center2 = center + vec3(0, randDouble(0, 0.25), 0);
                     world.add(std::make_shared<MovingSphere>(
                         center, center2, 0.0, 1.0, 0.2, sphere_material));
@@ -78,7 +79,7 @@ HittableList randomScene()
                     // metal
                     color3 albedo = color3::random(0.5, 1);
                     double fuzz = randDouble(0, 0.5);
-                    sphere_material = std::make_shared<Metal>(albedo, fuzz);
+                    sphere_material = std::make_shared<Metal>(std::make_shared<SolidColor>(albedo), fuzz);
                     world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
                 }
                 else
@@ -94,10 +95,10 @@ HittableList randomScene()
     auto material1 = std::make_shared<Dielectric>(1.5);
     world.add(std::make_shared<Sphere>(point3(0, 1, 0), 1.0, material1));
 
-    auto material2 = std::make_shared<Lambertian>(color3(0.4, 0.2, 0.1));
+    auto material2 = std::make_shared<Lambertian>(std::make_shared<SolidColor>(0.4, 0.2, 0.1));
     world.add(std::make_shared<Sphere>(point3(-4, 1, 0), 1.0, material2));
 
-    auto material3 = std::make_shared<Metal>(color3(0.7, 0.6, 0.5), 0.0);
+    auto material3 = std::make_shared<Metal>(std::make_shared<SolidColor>(0.7, 0.6, 0.5), 0.0);
     world.add(std::make_shared<Sphere>(point3(4, 1, 0), 1.0, material3));
 
     return world;
@@ -115,21 +116,6 @@ int main()
               << width << ' ' << height << " 255" << std::endl;
 
     HittableList world = randomScene();
-    // world.add(std::make_shared<Sphere>(
-    //     point3(0, 0, -1), 0.5, std::make_shared<Lambertian>(color3(0.7, 0.3, 0.3))));
-    // world.add(std::make_shared<Sphere>(
-    //     point3(0, -100.5, -1), 100, std::make_shared<Lambertian>(color3(0.8, 0.8, 0.0))));
-    // world.add(std::make_shared<Sphere>(
-    //     point3(1, 0, -1), 0.5, std::make_shared<Metal>(color3(0.8, 0.6, 0.2), 0.3)));
-    // world.add(std::make_shared<Sphere>(
-    //     point3(-1, 0, -1), 0.5, std::make_shared<Dielectric>(1.5)));
-    // world.add(std::make_shared<Sphere>(
-    //     point3(-1, 0, -1), -0.45, std::make_shared<Dielectric>(1.5)));
-
-    // point3 cam_pos(-3, 3, 2);
-    // point3 cam_target(0, 0, -1);
-    // double focus_dist{length(cam_pos - cam_target)};
-    // Camera cam(cam_pos, cam_target, vec3(0, 1, 0), 34.4, 1.77, 0.4, focus_dist);
 
     point3 cam_pos(13, 2, 3);
     point3 cam_target(0);

@@ -39,3 +39,11 @@ bool Sphere::bbox(double t0, double t1, AABB &aabb) const
     aabb = AABB(center - vec3(radius), center + vec3(radius));
     return true;
 }
+
+void sphereUV(point3 &center, double &u, double &v)
+{
+    double phi = atan2(center.z, center.x);
+    double theta = asin(center.z);
+    u = 1 - (phi + pi) / (2 * pi);
+    v = (theta + pi / 2) / pi;
+}

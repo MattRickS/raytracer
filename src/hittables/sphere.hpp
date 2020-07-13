@@ -18,3 +18,5 @@ public:
     virtual bool hit(const Ray &ray, double tmin, double tmax, Hit &hit) const;
     virtual bool bbox(double t0, double t1, AABB &aabb) const;
 };
+
+void sphereUV(point3 &center, double &u, double &v);
