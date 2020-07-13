@@ -12,7 +12,9 @@ public:
         double fov, // horizontal field of view in degrees
         double aspect,
         double aperture,
-        double focus_dist)
+        double focus_dist,
+        double t0 = 0,
+        double t1 = 1)
     {
         double theta = deg2rad(fov);
         double h = tan(theta / 2.0);
@@ -29,6 +31,8 @@ public:
         lower_left = origin - horizontal / 2 - vertical / 2 - focus_dist * forward;
 
         lens_radius = aperture / 2;
+        time0 = t0;
+        time1 = t1;
     }
 
     Ray projectRay(double u, double v) const
@@ -37,7 +41,8 @@ public:
         vec3 offset = right * lens_offset.x + up_vec * lens_offset.y;
         return Ray(
             origin + offset,
-            lower_left + u * horizontal + v * vertical - origin - offset);
+            lower_left + u * horizontal + v * vertical - origin - offset,
+            randDouble(time0, time1));
     }
 
 private:
@@ -47,4 +52,5 @@ private:
     vec3 vertical;
     vec3 forward, right, up_vec;
     double lens_radius;
+    double time0, time1; // shutter open/close times
 };

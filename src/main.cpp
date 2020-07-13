@@ -2,6 +2,7 @@
 #include <camera.hpp>
 #include <hittables/hittable_list.hpp>
 #include <hittables/sphere.hpp>
+#include <hittables/moving_sphere.hpp>
 #include <materials/dielectric.hpp>
 #include <materials/lambertian.hpp>
 #include <materials/material.hpp>
@@ -68,6 +69,9 @@ HittableList randomScene()
                     // diffuse
                     color3 albedo = color3::random() * color3::random();
                     sphere_material = std::make_shared<Lambertian>(albedo);
+                    point3 center2 = center + vec3(0, randDouble(0, 0.25), 0);
+                    world.add(std::make_shared<MovingSphere>(
+                        center, center2, 0.0, 1.0, 0.2, sphere_material));
                 }
                 else if (material_choice < 0.95)
                 {
@@ -75,13 +79,14 @@ HittableList randomScene()
                     color3 albedo = color3::random(0.5, 1);
                     double fuzz = randDouble(0, 0.5);
                     sphere_material = std::make_shared<Metal>(albedo, fuzz);
+                    world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
                 }
                 else
                 {
                     // glass
                     sphere_material = std::make_shared<Dielectric>(1.5);
+                    world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
                 }
-                world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
             }
         }
     }
@@ -101,7 +106,7 @@ HittableList randomScene()
 int main()
 {
     const double aspect = 16.0 / 9.0;
-    const int width = 384;
+    const int width = 192;
     const int height = static_cast<int>(width / aspect);
     const int samples = 100;
     const int max_depth = 50;

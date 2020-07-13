@@ -14,7 +14,7 @@ public:
         const Ray &ray, const Hit &hit, color3 &attenuation, Ray &scattered) const
     {
         vec3 reflected = reflect(normalise(ray.dir), hit.normal);
-        scattered = Ray(hit.pos, reflected + fuzz * randomUnitSphere());
+        scattered = Ray(hit.pos, reflected + fuzz * randomUnitSphere(), ray.time);
         attenuation = albedo;
         return (dot(scattered.dir, hit.normal) > 0);
     }

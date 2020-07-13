@@ -27,19 +27,19 @@ public:
         if (etai_over_etat * sin_theta > 1.0)
         {
             vec3 reflected = reflect(dir, hit.normal);
-            scattered = Ray(hit.pos, reflected);
+            scattered = Ray(hit.pos, reflected, ray.time);
             return true;
         }
         double reflect_prob = schlick(cos_theta, etai_over_etat);
         if (randDouble() < reflect_prob)
         {
             vec3 reflected = reflect(dir, hit.normal);
-            scattered = Ray(hit.pos, reflected);
+            scattered = Ray(hit.pos, reflected, ray.time);
             return true;
         }
 
         vec3 refracted = refract(dir, hit.normal, etai_over_etat);
-        scattered = Ray(hit.pos, refracted);
+        scattered = Ray(hit.pos, refracted, ray.time);
         return true;
     }
 };

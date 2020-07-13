@@ -14,7 +14,7 @@ public:
         const Ray &ray, const Hit &hit, color3 &attenuation, Ray &scattered) const
     {
         vec3 scatter_direction = hit.normal + randomUnitVector();
-        scattered = Ray(hit.pos, scatter_direction);
+        scattered = Ray(hit.pos, scatter_direction, ray.time);
         attenuation = albedo;
         return true;
     }
