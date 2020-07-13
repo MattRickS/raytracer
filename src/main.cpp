@@ -107,6 +107,16 @@ HittableList randomScene()
     return world;
 }
 
+HittableList twoPerlinSpheres()
+{
+    HittableList objects;
+
+    auto perlin_tex = std::make_shared<NoiseTexture>(2.0);
+    objects.add(std::make_shared<Sphere>(point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(perlin_tex)));
+    objects.add(std::make_shared<Sphere>(point3(0, 2, 0), 2, std::make_shared<Lambertian>(perlin_tex)));
+    return objects;
+}
+
 int main()
 {
     const double aspect = 16.0 / 9.0;
@@ -118,12 +128,12 @@ int main()
     std::cout << "P3\n"
               << width << ' ' << height << " 255" << std::endl;
 
-    HittableList world = randomScene();
+    HittableList world = twoPerlinSpheres();
 
     point3 cam_pos(13, 2, 3);
     point3 cam_target(0);
     double focus_dist{10.0};
-    double aperture{0.1};
+    double aperture{0.0};
     Camera cam(cam_pos, cam_target, vec3(0, 1, 0), 34.4, aspect, aperture, focus_dist);
 
     for (int y = height - 1; y >= 0; --y)

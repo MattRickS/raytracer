@@ -1,4 +1,5 @@
 #pragma once
+#include <perlin.hpp>
 #include <vec3.hpp>
 
 class Texture
@@ -42,5 +43,21 @@ public:
         {
             return even->value(u, v, pos);
         }
+    }
+};
+
+class NoiseTexture : public Texture
+{
+public:
+    Perlin noise;
+    double scale{1.0};
+
+    NoiseTexture() {}
+    NoiseTexture(double scale) : scale(scale) {}
+
+    virtual color3 value(double u, double v, const point3 &pos) const
+    {
+        return color3(1) * 0.5 * (1.0 + sin(scale * pos.z + 10 * noise.turb(scale * pos)));
+        // return color3(1) * noise.turb(scale * pos); //* 0.5 * (1.0 + noise.scale(scale * pos));
     }
 };
