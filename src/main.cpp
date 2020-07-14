@@ -117,6 +117,14 @@ HittableList twoPerlinSpheres()
     return objects;
 }
 
+HittableList earth()
+{
+    auto earth_texture = std::make_shared<ImageTexture>("/home/mshaw/earthmap.jpg");
+    auto earth_surface = std::make_shared<Lambertian>(earth_texture);
+    auto globe = std::make_shared<Sphere>(point3(0), 2, earth_surface);
+    return HittableList(globe);
+}
+
 int main()
 {
     const double aspect = 16.0 / 9.0;
@@ -128,7 +136,7 @@ int main()
     std::cout << "P3\n"
               << width << ' ' << height << " 255" << std::endl;
 
-    HittableList world = twoPerlinSpheres();
+    HittableList world = earth();
 
     point3 cam_pos(13, 2, 3);
     point3 cam_target(0);

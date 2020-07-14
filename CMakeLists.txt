@@ -4,5 +4,6 @@ project(RAYTRACER)
 add_subdirectory(extern)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/extern/stb)
 file(GLOB SOURCES "src/*.cpp" "src/hittables/*.cpp")
 add_executable(test ${SOURCES})
