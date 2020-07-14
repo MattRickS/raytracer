@@ -1,8 +1,10 @@
 #include <iostream>
 #include <camera.hpp>
 #include <hittables/hittable_list.hpp>
+#include <hittables/box.hpp>
 #include <hittables/sphere.hpp>
 #include <hittables/rect.hpp>
+#include <hittables/xform.hpp>
 #include <hittables/moving_sphere.hpp>
 #include <materials/dielectric.hpp>
 #include <materials/diffuse_light.hpp>
@@ -160,13 +162,23 @@ HittableList cornellBox()
     objects.add(std::make_shared<XZRect>(0, 555, 0, 555, 555, white));
     objects.add(std::make_shared<XYRect>(0, 555, 0, 555, 555, white));
 
+    std::shared_ptr<Hittable> box1 = std::make_shared<Box>(point3(0), point3(165, 330, 165), white);
+    box1 = std::make_shared<RotateY>(box1, 15);
+    box1 = std::make_shared<Translate>(box1, vec3(265, 0, 295));
+    objects.add(box1);
+
+    std::shared_ptr<Hittable> box2 = std::make_shared<Box>(point3(0), point3(165), white);
+    box2 = std::make_shared<RotateY>(box2, -18);
+    box2 = std::make_shared<Translate>(box2, vec3(130, 0, 65));
+    objects.add(box2);
+
     return objects;
 }
 
 int main()
 {
     const double aspect = 16.0 / 9.0;
-    const int width = 384;
+    const int width = 640;
     const int height = static_cast<int>(width / aspect);
     const int samples = 100;
     const int max_depth = 50;
@@ -181,7 +193,8 @@ int main()
     point3 cam_target(278, 278, 0);
     double focus_dist{10.0};
     double aperture{0.0};
-    Camera cam(cam_pos, cam_target, vec3(0, 1, 0), 70.8, aspect, aperture, focus_dist);
+    double fov{70.8};
+    Camera cam(cam_pos, cam_target, vec3(0, 1, 0), fov, aspect, aperture, focus_dist);
 
     for (int y = height - 1; y >= 0; --y)
     {
