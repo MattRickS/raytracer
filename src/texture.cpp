@@ -20,7 +20,7 @@ color3 CheckerTexture::value(double u, double v, const point3 &pos) const
 
 color3 NoiseTexture::value(double u, double v, const point3 &pos) const
 {
-    return color3(1) * 0.5 * (1.0 + sin(scale * pos.z + 10 * noise.turb(pos, depth)));
+    return color3(0.5) * (1.0 + sin(scale * pos.x + 10 * noise.turb(scale * pos, depth)));
     // return color3(1) * noise.turb(scale * pos); //* 0.5 * (1.0 + noise.scale(scale * pos));
 }
 
