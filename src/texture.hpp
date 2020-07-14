@@ -54,14 +54,15 @@ class NoiseTexture : public Texture
 {
 public:
     Perlin noise;
+    int depth{7};
     double scale{1.0};
 
     NoiseTexture() {}
-    NoiseTexture(double scale) : scale(scale) {}
+    NoiseTexture(double scale, int depth = 7) : scale(scale), depth(depth) {}
 
     virtual color3 value(double u, double v, const point3 &pos) const
     {
-        return color3(1) * 0.5 * (1.0 + sin(scale * pos.z + 10 * noise.turb(scale * pos)));
+        return color3(1) * 0.5 * (1.0 + sin(scale * pos.z + 10 * noise.turb(pos, depth)));
         // return color3(1) * noise.turb(scale * pos); //* 0.5 * (1.0 + noise.scale(scale * pos));
     }
 };
