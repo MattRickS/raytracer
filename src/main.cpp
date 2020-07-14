@@ -2,8 +2,10 @@
 #include <camera.hpp>
 #include <hittables/hittable_list.hpp>
 #include <hittables/sphere.hpp>
+#include <hittables/xyrect.hpp>
 #include <hittables/moving_sphere.hpp>
 #include <materials/dielectric.hpp>
+#include <materials/diffuse_light.hpp>
 #include <materials/lambertian.hpp>
 #include <materials/material.hpp>
 #include <materials/metal.hpp>
@@ -24,7 +26,7 @@ void writeColor(std::ostream &out, color3 col, int samples)
         << static_cast<int>(256 * clamp(b, 0.0, 0.999)) << '\n';
 }
 
-color3 rayColor(const Ray &ray, const Hittable &world, int depth)
+color3 rayColor(const Ray &ray, const color3 &bg, const Hittable &world, int depth)
 {
     if (depth <= 0)
     {
@@ -32,19 +34,21 @@ color3 rayColor(const Ray &ray, const Hittable &world, int depth)
     }
 
     Hit hit;
-    if (world.hit(ray, 0.001, infinity, hit))
+    if (!world.hit(ray, 0.001, infinity, hit))
     {
-        Ray scattered;
-        color3 attenuation;
-        if (hit.mat_ptr->scatter(ray, hit, attenuation, scattered))
-        {
-            return attenuation * rayColor(scattered, world, depth - 1);
-        }
-        return color3(0);
+        return bg;
     }
-    vec3 dir = normalise(ray.dir);
-    double delta = (dir.y + 1.0) * 0.5;
-    return (1.0 - delta) * color3(1.0) + delta * color3(0.5, 0.7, 1.0);
+
+    Ray scattered;
+    color3 attenuation;
+    color3 emitted = hit.mat_ptr->emitted(hit.u, hit.v, hit.pos);
+
+    if (!hit.mat_ptr->scatter(ray, hit, attenuation, scattered))
+    {
+        return emitted;
+    }
+
+    return emitted + attenuation * rayColor(scattered, bg, world, depth - 1);
 }
 
 HittableList randomScene()
@@ -125,24 +129,40 @@ HittableList earth()
     return HittableList(globe);
 }
 
+HittableList simpleLight()
+{
+    HittableList objects;
+
+    auto pertext = std::make_shared<NoiseTexture>(4);
+    objects.add(std::make_shared<Sphere>(point3(0, -1000, 0), 1000, std::make_shared<Lambertian>(pertext)));
+    objects.add(std::make_shared<Sphere>(point3(0, 2, 0), 2, std::make_shared<Lambertian>(pertext)));
+
+    auto difflight = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(4));
+    objects.add(std::make_shared<Sphere>(point3(0, 7, 0), 2, difflight));
+    objects.add(std::make_shared<XYRect>(3, 5, 1, 3, -2, difflight));
+
+    return objects;
+}
+
 int main()
 {
     const double aspect = 16.0 / 9.0;
-    const int width = 192;
+    const int width = 384;
     const int height = static_cast<int>(width / aspect);
     const int samples = 100;
     const int max_depth = 50;
+    const color3 bg{0.0};
 
     std::cout << "P3\n"
               << width << ' ' << height << " 255" << std::endl;
 
-    HittableList world = earth();
+    HittableList world = simpleLight();
 
-    point3 cam_pos(13, 2, 3);
-    point3 cam_target(0);
+    point3 cam_pos(10, 3, 2);
+    point3 cam_target(0, 2, 0);
     double focus_dist{10.0};
     double aperture{0.0};
-    Camera cam(cam_pos, cam_target, vec3(0, 1, 0), 34.4, aspect, aperture, focus_dist);
+    Camera cam(cam_pos, cam_target, vec3(0, 1, 0), 65, aspect, aperture, focus_dist);
 
     for (int y = height - 1; y >= 0; --y)
     {
@@ -156,7 +176,7 @@ int main()
                 double u = (x + randDouble()) / (width - 1);
                 double v = (y + randDouble()) / (height - 1);
                 Ray ray = cam.projectRay(u, v);
-                pixel += rayColor(ray, world, max_depth);
+                pixel += rayColor(ray, bg, world, max_depth);
             }
             writeColor(std::cout, pixel, samples);
         }
