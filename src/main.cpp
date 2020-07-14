@@ -2,6 +2,7 @@
 #include <camera.hpp>
 #include <hittables/hittable_list.hpp>
 #include <hittables/box.hpp>
+#include <hittables/bvh_node.hpp>
 #include <hittables/sphere.hpp>
 #include <hittables/rect.hpp>
 #include <hittables/volume.hpp>
@@ -206,27 +207,107 @@ HittableList cornellBoxSmoke()
     return objects;
 }
 
+HittableList weekFinalScene()
+{
+    // Boxes
+    // HittableList boxes1;
+    HittableList objects;
+    auto ground = std::make_shared<Lambertian>(std::make_shared<SolidColor>(0.48, 0.83, 0.53));
+
+    const int boxes_per_side = 20;
+    for (int i = 0; i < boxes_per_side; i++)
+    {
+        for (int j = 0; j < boxes_per_side; j++)
+        {
+            double w = 100.0;
+            double x0 = -1000.0 + i * w;
+            double y0 = 0.0;
+            double z0 = -1000.0 + j * w;
+            double x1 = x0 + w;
+            double y1 = randDouble(1, 101);
+            double z1 = z0 + w;
+
+            // boxes1.add(std::make_shared<Box>(point3(x0, y0, z0), point3(x1, y1, z1), ground));
+            objects.add(std::make_shared<Box>(point3(x0, y0, z0), point3(x1, y1, z1), ground));
+        }
+    }
+
+    // Primary list
+    // objects.add(std::make_shared<BVHNode>(boxes1, 0, 1));
+
+    // Light(s)
+    auto light = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(7));
+    objects.add(std::make_shared<XZRect>(123, 423, 147, 412, 554, light));
+
+    // Moving Sphere(s)
+    point3 center1 = point3(400, 400, 200);
+    point3 center2 = center1 + vec3(30, 0, 0);
+    auto moving_sphere_material = std::make_shared<Lambertian>(
+        std::make_shared<SolidColor>(0.7, 0.3, 0.1));
+    objects.add(std::make_shared<MovingSphere>(center1, center2, 0, 1, 50, moving_sphere_material));
+
+    // Sphere(s)
+    objects.add(std::make_shared<Sphere>(point3(260, 150, 45), 50, std::make_shared<Dielectric>(1.5)));
+    objects.add(std::make_shared<Sphere>(
+        point3(0, 150, 145),
+        50,
+        std::make_shared<Metal>(
+            std::make_shared<SolidColor>(
+                color3(0.8, 0.8, 0.9)),
+            10.0)));
+
+    // Volume(s)
+    auto boundary = std::make_shared<Sphere>(point3(360, 150, 145), 70, std::make_shared<Dielectric>(1.5));
+    objects.add(boundary);
+    objects.add(std::make_shared<ConstantMedium>(
+        boundary, 0.2, std::make_shared<SolidColor>(0.2, 0.4, 0.9)));
+    boundary = std::make_shared<Sphere>(point3(0), 5000, std::make_shared<Dielectric>(1.5));
+    objects.add(std::make_shared<ConstantMedium>(boundary, 0.0001, std::make_shared<SolidColor>(1)));
+
+    // Textured object(s)
+    auto earth_mat = std::make_shared<Lambertian>(
+        std::make_shared<ImageTexture>("/home/mshaw/earthmap.jpg"));
+    objects.add(std::make_shared<Sphere>(point3(400, 200, 400), 100, earth_mat));
+    auto pertext = std::make_shared<NoiseTexture>(0.1);
+    objects.add(std::make_shared<Sphere>(
+        point3(220, 280, 300), 80, std::make_shared<Lambertian>(pertext)));
+
+    // Box of spheres
+    HittableList boxes2;
+    auto white = std::make_shared<Lambertian>(std::make_shared<SolidColor>(0.73));
+    int ns = 1000;
+    for (int j = 0; j < ns; j++)
+    {
+        boxes2.add(std::make_shared<Sphere>(point3::random(0, 165), 10, white));
+    }
+    objects.add(std::make_shared<Translate>(
+        std::make_shared<RotateY>(
+            std::make_shared<HittableList>(boxes2), 15),
+        // std::make_shared<BVHNode>(boxes2, 0.0, 1.0), 15),
+        vec3(-100, 270, 395)));
+
+    return objects;
+}
+
 int main()
 {
-    // const double aspect = 16.0 / 9.0;
-    const int width = 640;
-    const int height = 640;
     const double aspect = 1.0;
-    // const int height = static_cast<int>(width / aspect);
-    const int samples = 100;
+    const int width = 160;
+    const int height = static_cast<int>(width / aspect);
+    const int samples = 10;
     const int max_depth = 50;
     const color3 bg{0.0};
 
     std::cout << "P3\n"
               << width << ' ' << height << " 255" << std::endl;
 
-    HittableList world = cornellBoxSmoke();
+    HittableList world = weekFinalScene();
 
-    point3 cam_pos(278, 278, -800);
+    point3 cam_pos(450, 278, -400);
     point3 cam_target(278, 278, 0);
     double focus_dist{10.0};
     double aperture{0.0};
-    double fov{70.8};
+    double fov{55};
     Camera cam(cam_pos, cam_target, vec3(0, 1, 0), fov, aspect, aperture, focus_dist);
 
     for (int y = height - 1; y >= 0; --y)
