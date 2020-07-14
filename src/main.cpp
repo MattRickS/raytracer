@@ -2,7 +2,7 @@
 #include <camera.hpp>
 #include <hittables/hittable_list.hpp>
 #include <hittables/sphere.hpp>
-#include <hittables/xyrect.hpp>
+#include <hittables/rect.hpp>
 #include <hittables/moving_sphere.hpp>
 #include <materials/dielectric.hpp>
 #include <materials/diffuse_light.hpp>
@@ -144,6 +144,25 @@ HittableList simpleLight()
     return objects;
 }
 
+HittableList cornellBox()
+{
+    HittableList objects;
+
+    auto red = std::make_shared<Lambertian>(std::make_shared<SolidColor>(.65, .05, .05));
+    auto white = std::make_shared<Lambertian>(std::make_shared<SolidColor>(.73, .73, .73));
+    auto green = std::make_shared<Lambertian>(std::make_shared<SolidColor>(.12, .45, .15));
+    auto light = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(15, 15, 15));
+
+    objects.add(std::make_shared<YZRect>(0, 555, 0, 555, 555, green));
+    objects.add(std::make_shared<YZRect>(0, 555, 0, 555, 0, red));
+    objects.add(std::make_shared<XZRect>(213, 343, 227, 332, 554, light));
+    objects.add(std::make_shared<XZRect>(0, 555, 0, 555, 0, white));
+    objects.add(std::make_shared<XZRect>(0, 555, 0, 555, 555, white));
+    objects.add(std::make_shared<XYRect>(0, 555, 0, 555, 555, white));
+
+    return objects;
+}
+
 int main()
 {
     const double aspect = 16.0 / 9.0;
@@ -156,13 +175,13 @@ int main()
     std::cout << "P3\n"
               << width << ' ' << height << " 255" << std::endl;
 
-    HittableList world = simpleLight();
+    HittableList world = cornellBox();
 
-    point3 cam_pos(10, 3, 2);
-    point3 cam_target(0, 2, 0);
+    point3 cam_pos(278, 278, -800);
+    point3 cam_target(278, 278, 0);
     double focus_dist{10.0};
     double aperture{0.0};
-    Camera cam(cam_pos, cam_target, vec3(0, 1, 0), 65, aspect, aperture, focus_dist);
+    Camera cam(cam_pos, cam_target, vec3(0, 1, 0), 70.8, aspect, aperture, focus_dist);
 
     for (int y = height - 1; y >= 0; --y)
     {
