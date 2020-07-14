@@ -19,4 +19,4 @@ public:
     virtual bool bbox(double t0, double t1, AABB &aabb) const;
 };
 
-void sphereUV(point3 &center, double &u, double &v);
+void sphereUV(const point3 &center, double &u, double &v);

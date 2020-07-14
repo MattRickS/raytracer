@@ -1,4 +1,5 @@
 #include <hittables/moving_sphere.hpp>
+#include <hittables/sphere.hpp>
 
 point3 MovingSphere::center(double time) const
 {
@@ -18,21 +19,25 @@ bool MovingSphere::hit(const Ray &ray, double tmin, double tmax, Hit &hit) const
         double delta = (-half_b - root) / a;
         if (delta < tmax && delta > tmin)
         {
+            point3 c = center(ray.time);
             hit.delta = delta;
             hit.pos = ray.at(delta);
-            vec3 outward_normal = (hit.pos - center(ray.time)) / radius;
+            vec3 outward_normal = (hit.pos - c) / radius;
             hit.set_face_normal(ray, outward_normal);
             hit.mat_ptr = mat_ptr;
+            sphereUV((hit.pos - c) / radius, hit.u, hit.v);
             return true;
         }
         delta = (-half_b + root) / a;
         if (delta < tmax && delta > tmin)
         {
+            point3 c = center(ray.time);
             hit.delta = delta;
             hit.pos = ray.at(delta);
-            vec3 outward_normal = (hit.pos - center(ray.time)) / radius;
+            vec3 outward_normal = (hit.pos - c) / radius;
             hit.set_face_normal(ray, outward_normal);
             hit.mat_ptr = mat_ptr;
+            sphereUV((hit.pos - c) / radius, hit.u, hit.v);
             return true;
         }
     }

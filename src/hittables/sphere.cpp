@@ -18,6 +18,7 @@ bool Sphere::hit(const Ray &ray, double tmin, double tmax, Hit &hit) const
             vec3 outward_normal = (hit.pos - center) / radius;
             hit.set_face_normal(ray, outward_normal);
             hit.mat_ptr = mat_ptr;
+            sphereUV((hit.pos - center) / radius, hit.u, hit.v);
             return true;
         }
         delta = (-half_b + root) / a;
@@ -28,6 +29,7 @@ bool Sphere::hit(const Ray &ray, double tmin, double tmax, Hit &hit) const
             vec3 outward_normal = (hit.pos - center) / radius;
             hit.set_face_normal(ray, outward_normal);
             hit.mat_ptr = mat_ptr;
+            sphereUV((hit.pos - center) / radius, hit.u, hit.v);
             return true;
         }
     }
@@ -40,10 +42,10 @@ bool Sphere::bbox(double t0, double t1, AABB &aabb) const
     return true;
 }
 
-void sphereUV(point3 &center, double &u, double &v)
+void sphereUV(const point3 &pos, double &u, double &v)
 {
-    double phi = atan2(center.z, center.x);
-    double theta = asin(center.z);
+    double phi = atan2(pos.z, pos.x);
+    double theta = asin(pos.y);
     u = 1 - (phi + pi) / (2 * pi);
     v = (theta + pi / 2) / pi;
 }
