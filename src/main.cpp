@@ -292,7 +292,7 @@ int main()
     const double aspect = 1.0;
     const int width = 160;
     const int height = static_cast<int>(width / aspect);
-    const int samples = 10;
+    const int samples = 3000;
     const int max_depth = 50;
     const color3 bg{0.0};
 
@@ -302,16 +302,15 @@ int main()
     HittableList world = weekFinalScene();
 
     point3 cam_pos(450, 278, -400);
-    point3 cam_target(278, 278, 0);
+    point3 cam_target(320, 278, 0);
     double focus_dist{10.0};
     double aperture{0.0};
-    double fov{55};
+    double fov{50};
     Camera cam(cam_pos, cam_target, vec3(0, 1, 0), fov, aspect, aperture, focus_dist);
 
     for (int y = height - 1; y >= 0; --y)
     {
-        std::cerr << "\rScanlines remaining: " << y << '\n'
-                  << std::flush;
+        std::cerr << "\rScanlines remaining: " << y << "  " << std::flush;
         for (int x = 0; x < width; x++)
         {
             color3 pixel{0.0};

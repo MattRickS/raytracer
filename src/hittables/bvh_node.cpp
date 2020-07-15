@@ -32,7 +32,7 @@ bool box_z_compare(const std::shared_ptr<Hittable> lhs, const std::shared_ptr<Hi
 BVHNode::BVHNode(std::vector<std::shared_ptr<Hittable>> &objects,
                  size_t start, size_t end, double time0, double time1)
 {
-    int axis = randInt(0, 2);
+    int axis = 0; // randInt(0, 2);
     auto comparator = (axis == 0) ? box_x_compare
                                   : (axis == 1) ? box_y_compare
                                                 : box_z_compare;
