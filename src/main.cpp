@@ -210,8 +210,7 @@ HittableList cornellBoxSmoke()
 HittableList weekFinalScene()
 {
     // Boxes
-    // HittableList boxes1;
-    HittableList objects;
+    HittableList boxes1;
     auto ground = std::make_shared<Lambertian>(std::make_shared<SolidColor>(0.48, 0.83, 0.53));
 
     const int boxes_per_side = 20;
@@ -227,13 +226,13 @@ HittableList weekFinalScene()
             double y1 = randDouble(1, 101);
             double z1 = z0 + w;
 
-            // boxes1.add(std::make_shared<Box>(point3(x0, y0, z0), point3(x1, y1, z1), ground));
-            objects.add(std::make_shared<Box>(point3(x0, y0, z0), point3(x1, y1, z1), ground));
+            boxes1.add(std::make_shared<Box>(point3(x0, y0, z0), point3(x1, y1, z1), ground));
         }
     }
 
     // Primary list
-    // objects.add(std::make_shared<BVHNode>(boxes1, 0, 1));
+    HittableList objects;
+    objects.add(std::make_shared<BVHNode>(boxes1, 0, 1));
 
     // Light(s)
     auto light = std::make_shared<DiffuseLight>(std::make_shared<SolidColor>(7));
@@ -282,8 +281,7 @@ HittableList weekFinalScene()
     }
     objects.add(std::make_shared<Translate>(
         std::make_shared<RotateY>(
-            std::make_shared<HittableList>(boxes2), 15),
-        // std::make_shared<BVHNode>(boxes2, 0.0, 1.0), 15),
+            std::make_shared<BVHNode>(boxes2, 0.0, 1.0), 15),
         vec3(-100, 270, 395)));
 
     return objects;

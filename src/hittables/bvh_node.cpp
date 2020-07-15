@@ -85,6 +85,6 @@ bool BVHNode::hit(const Ray &ray, double tmin, double tmax, Hit &hit) const
         return false;
     }
     bool hit_left = left->hit(ray, tmin, tmax, hit);
-    bool hit_right = right->hit(ray, tmin, tmax, hit);
+    bool hit_right = right->hit(ray, tmin, hit_left ? hit.delta : tmax, hit);
     return hit_left || hit_right;
 }
