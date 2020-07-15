@@ -22,11 +22,17 @@ private:
     point3 _max;
 };
 
+inline std::ostream &operator<<(std::ostream &out, const AABB aabb)
+{
+    return out << "AABB(" << aabb.min() << ", " << aabb.max() << ')';
+}
+
 inline bool AABB::hit(const Ray &ray, double tmin, double tmax) const
 {
+
     for (int i = 0; i < 3; i++)
     {
-        double invD = 1.0f / ray.dir[i];
+        double invD = 1.0 / ray.dir[i];
         double t0 = (_min[i] - ray.origin[i]) * invD;
         double t1 = (_max[i] - ray.origin[i]) * invD;
         if (invD < 0.0f)
@@ -34,7 +40,7 @@ inline bool AABB::hit(const Ray &ray, double tmin, double tmax) const
             std::swap(t0, t1);
         }
         tmin = t0 > tmin ? t0 : tmin;
-        tmax = t1 > tmax ? t1 : tmax;
+        tmax = t1 < tmax ? t1 : tmax;
         if (tmax <= tmin)
         {
             return false;

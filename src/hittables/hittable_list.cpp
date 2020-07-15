@@ -35,7 +35,7 @@ bool HittableList::bbox(double t0, double t1, AABB &aabb) const
         {
             return false;
         }
-        temp_box = first_box ? temp_box : surroundingBox(aabb, temp_box);
+        aabb = first_box ? temp_box : surroundingBox(aabb, temp_box);
         first_box = false;
     }
 
